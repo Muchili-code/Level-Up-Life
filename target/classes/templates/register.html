@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>建立契约 - Life RPG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #1a1a1a; display: flex; align-items: center; justify-content: center; height: 100vh; color: #5bc0de; }
+        .reg-box {
+            background: #2c2c2c;
+            padding: 2rem;
+            border: 2px solid #5bc0de; /* 蓝色边框 */
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(91, 192, 222, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn-reg { background-color: #5bc0de; color: #1a1a1a; font-weight: bold; border: none; }
+    </style>
+</head>
+<body>
+    <div class="reg-box">
+        <h2 class="text-center mb-4">📜 建立冒险契约</h2>
+        
+        <div th:if="${error}" class="alert alert-danger py-2" th:text="${error}"></div>
+
+        <form th:action="@{/register}" method="post">
+            <div class="mb-3">
+                <label class="form-label">选择你的名号</label>
+                <input type="text" name="username" class="form-control bg-dark text-white border-secondary" placeholder="输入勇者名称" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">设置通行密码</label>
+                <input type="password" name="password" class="form-control bg-dark text-white border-secondary" placeholder="至少6位字符" required>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-reg">签订契约</button>
+                <a href="/login" class="text-center mt-2 text-decoration-none" style="color: #aaa; font-size: 0.8rem;">
+                    已有契约？直接传送登录
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

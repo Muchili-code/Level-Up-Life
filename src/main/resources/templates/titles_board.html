@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<body>
+<section>
+    <div class="text-center text-black mb-5">
+        <h2 class="display-4">🏛️ 荣誉殿堂</h2>
+        <p class="lead">提升等级，解锁属于你的传奇头衔。</p>
+        <div class="h5 mt-3">当前等级：<span class="text-warning" th:text="${player.level}">1</span></div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div th:each="t : ${titlesConfig}" class="card rpg-card mb-3 shadow-lg" 
+                 th:classappend="${player.level >= t.level} ? 'border-warning' : 'opacity-50'">
+                <div class="card-body d-flex align-items-center">
+                    <div class="me-4" style="font-size: 2.5rem;">
+                        <span th:if="${player.level >= t.level}">🏆</span>
+                        <span th:if="${player.level < t.level}">🔒</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h4 class="mb-1 text-white" th:text="${t.name}">头衔名称</h4>
+                        <p class="small text-white mb-0" th:text="${t.desc}">描述文字</p>
+                    </div>
+                    <div class="text-end">
+                        <span th:if="${player.level >= t.level}" class="badge bg-success">已达成</span>
+                        <span th:if="${player.level < t.level}" class="text-info" th:text="'LV.' + ${t.level} + ' 解锁'"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="/dashboard" class="btn btn-outline-light">返回主控制台</a>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

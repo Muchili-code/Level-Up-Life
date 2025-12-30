@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<body>
+    <section>
+        <div class="text-center text-white mb-5">
+            <div class="card rpg-card text-white mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">🏪 哥布林黑市</h2>
+                    <p>你辛辛苦苦赚的金币，就是为了这一刻。</p>
+                </div>
+            </div>
+            
+            <div th:if="${param.error}" class="alert alert-danger">
+                资金不足或库存不足！请再去搬砖吧勇者。
+            </div>
+            <div th:if="${param.success}" class="alert alert-success">
+                🎉 兑换成功！请在现实中领取你的奖励！
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center mb-4 bg-dark p-3 rounded shadow-sm">
+                <div class="me-4">
+                    <span class="text-white">当前余额：</span>
+                    <span class="text-warning h3">💰 <span th:text="${player.gold}">0</span></span>
+                </div>
+                <button type="button" class="btn btn-outline-info btn-sm rounded-circle" data-bs-toggle="modal" data-bs-target="#ruleModal">
+                    ℹ️ 规则
+                </button>
+            </div>
+
+            <div class="modal fade" id="ruleModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark text-white">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title">📊 世界法则</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-start">
+                            <h6>1. 经验值 (XP)</h6>
+                            <p class="small text-white">公式：难度 × (20 + 等级 × 2)</p>
+                            
+                            <h6>2. 金币获取</h6>
+                            <p class="small text-white">公式：(难度 × 10) + (STR + INT) ÷ 2</p>
+                            
+                            <h6>3. 属性成长</h6>
+                            <p class="small text-white">每次完成任务，属性增加值 = <strong>任务难度</strong>。</p>
+                            
+                            <h6>4. 升级阈值</h6>
+                            <p class="small text-white">公式：100 + (当前等级 × 50)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="item : ${rewards}">
+                <div class="card rpg-card text-white text-center h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3" style="font-size: 3rem;">🎁</div>
+                        <h5 class="card-title" th:text="${item.itemName}">Item Name</h5>
+                        <p class="text-info" style="font-size: 0.9rem;" th:text="${item.description}"></p>
+                        <h4 class="text-warning">💰 <span th:text="${item.cost}">100</span></h4>
+                        <p class="text-white">库存: <span th:text="${item.stock == -1 ? '无限' : item.stock}"></span></p>
+                        
+                        <form th:action="@{/shop/buy/{id}(id=${item.id})}" method="post" class="mt-auto">
+                            <button type="submit" class="btn btn-primary w-100" 
+                                    th:disabled="${player.gold < item.cost}">
+                                购买
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <div class="card rpg-card text-white">
+                <div class="card-header bg-secondary">📜 账务清单 (购买历史)</div>
+                <div class="card-body">
+                    <div th:if="${history.empty}" class="text-center text-muted">
+                        你还没有进行过任何交易。
+                    </div>
+                    <table th:if="${!history.empty}" class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>购买时间</th>
+                                <th>物品名称</th>
+                                <th>消费金额</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="log : ${history}">
+                                <td th:text="${#temporals.format(log.purchaseTime, 'yyyy-MM-dd HH:mm')}">2025-01-01</td>
+                                <td th:text="${log.itemName}">物品名称</td>
+                                <td class="text-warning" th:text="'💰 ' + ${log.cost}">100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

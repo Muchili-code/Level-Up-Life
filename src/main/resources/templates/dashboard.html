@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head></head>
+<body>
+    <section>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card rpg-card text-white">
+                    <img th:src="@{/images/avatars/hero.png}" alt="Hero" class="img-fluid rounded-circle mb-3" style="max-width: 150px; border: 2px solid #333;" onerror="this.src='https://via.placeholder.com/300?text=Hero'">
+                    <div class="card-body">
+                        <h3 class="card-title text-center" th:text="${player.username}">Hero</h3>
+                    <div class="text-center mb-2">
+
+                        <span class="badge rounded-pill bg-warning text-dark" style="font-size: 0.9rem; border: 1px solid #d4a017;">
+                            🏅 <span th:text="${player.title}">初级冒险者</span>
+                        </span>
+                        <div class="text-center mb-2">
+                            <a href="/player/titles" class="text-decoration-none">
+                                <span class="badge rounded-pill bg-warning text-dark" style="cursor: pointer;">
+                                    🏅 <span th:text="${player.title}">初级冒险者</span> 
+                                    <small class="ms-1">(查看全部)</small>
+                                </span>
+                            </a>
+                        </div>
+                        
+                    </div>                        
+                        <hr>
+                        <p><strong>🔥 力量 (STR):</strong> <span th:text="${player.str}">10</span></p>
+                        <p><strong>🧠 智力 (INT):</strong> <span th:text="${player.intel}">10</span></p>
+                        <div class="d-grid mt-3">
+                            <a href="/player/reset" class="btn btn-outline-danger btn-sm" onclick="return confirm('警告：这将重置你的等级和所有属性，确定吗？')">🔄 初始化全部数据
+                            </a>
+                        </div>
+
+                        <div class="d-grid mt-2">
+                            <form th:action="@{/user/delete}" method="post" onsubmit="return confirm('❗ 永久注销：这将彻底删除你的账号数据，确认吗？')">
+                                <button type="submit" class="btn btn-outline-danger btn-sm w-100" style="opacity: 0.7;">
+                                    💀 彻底注销账号
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card rpg-card text-white mb-4">
+                    <div class="card-header">等级进度</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Level <span th:text="${player.level}">1</span></h5>
+                        <div class="progress" style="height: 30px; background-color: #333;">
+                            <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" 
+                                 th:style="'width: ' + ${xpProgress} + '%'"
+                                 th:text="${xpProgress} + '%'">
+                            </div>
+                        </div>
+                        <p class="mt-2 text-white">
+                            当前经验: <span th:text="${player.currentXp}"></span> / 
+                            升级所需: <span th:text="${nextLevelXp}"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card rpg-card text-white">
+                    <div class="card-header">📊 战斗力评估</div>
+                    <div class="card-body">
+                        <div id="radarChart" style="width: 100%; height: 400px;"></div>
+                    </div>
+                </div>
+                <script th:inline="javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // 1. 从后端 Model 获取真实的属性数据
+                        var strVal = /*[[${player.str}]]*/ 10;
+                        var intVal = /*[[${player.intel}]]*/ 10;
+                        var level = /*[[${player.level}]]*/ 1;
+                                        
+                        // 2. 初始化图表
+                        var chartDom = document.getElementById('radarChart');
+                        var myChart = echarts.init(chartDom, 'dark'); // 使用暗色主题匹配 RPG 风格
+                        
+                        var option = {
+                            backgroundColor: 'transparent', // 透明背景，使用卡片背景
+                            radar: {
+                                indicator: [
+                                    { name: '力量 (STR)', max: 100 },
+                                    { name: '智力 (INT)', max: 100 },
+                                    { name: '敏捷 (AGI)', max: 100 },
+                                    { name: '耐力 (VIT)', max: 100 },
+                                    { name: '幸运 (LUCK)', max: 100 },
+                                    { name: '等级 (LVL)', max: 50 }
+                                ],
+                                shape: 'circle',
+                                splitNumber: 4,
+                                axisName: { color: '#f0ad4e' }, // 橙色文字
+                                splitLine: { lineStyle: { color: '#555' } },
+                                splitArea: { show: false }
+                            },
+                            series: [{
+                                name: 'Hero Status',
+                                type: 'radar',
+                                data: [{
+                                    value: [strVal, intVal, 15, 20, 10, level], // 暂时填入部分模拟值
+                                    name: '当前属性',
+                                    areaStyle: { color: 'rgba(240, 173, 78, 0.3)' },
+                                    lineStyle: { color: '#f0ad4e', width: 2 },
+                                    itemStyle: { color: '#f0ad4e' }
+                                }]
+                            }]
+                        };
+                        myChart.setOption(option);
+                    });
+                </script>
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<div id="radarChart" style="width: 100%; height: 300px;"></div>
+
+<script th:inline="javascript">
+    // 获取后端传来的数据
+    var str = /*[[${player.str}]]*/ 10;
+    var intel = /*[[${player.intel}]]*/ 10;
+    // 假设你还有其他属性，或者暂时用固定值模拟
+    var agi = 15; 
+    var luck = 5;
+    var vit = 20;
+
+    var chartDom = document.getElementById('radarChart');
+    var myChart = echarts.init(chartDom);
+    var option = {
+        // 鼠标提示
+        tooltip: {
+            show: true,
+            trigger: 'item'
+        },
+        title: { text: '能力分布图', textStyle: { color: '#fff' } },
+        radar: {
+            indicator: [
+                { name: '力量 (STR)', max: 100 },
+                { name: '智力 (INT)', max: 100 },
+                { name: '敏捷 (AGI)', max: 100 },
+                { name: '幸运 (LUCK)', max: 100 },
+                { name: '耐力 (VIT)', max: 100 }
+            ]
+        },
+        series: [{
+            name: 'Attributes',
+            type: 'radar',
+            data: [
+                {
+                    value: [str, intel, agi, luck, vit],
+                    name: '当前状态'
+                }
+            ]
+        }]
+    };
+    myChart.setOption(option);
+</script>

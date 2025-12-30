@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::section})}">
+<head>
+    <title>任务表单</title>
+</head>
+<body>
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0" th:text="${quest.id == null ? '📜 发布新任务 (New Quest)' : '📝 修改任务 (Edit Quest)'}"></h4>
+                </div>
+                
+                <div class="card-body">
+                    <form th:action="@{/quests/save}" th:object="${quest}" method="post">
+                        
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label class="form-label">任务名称 (Title)</label>
+                            <input type="text" th:field="*{title}" class="form-control" placeholder="例如：背诵50个单词" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">详细描述 (Description)</label>
+                            <textarea th:field="*{description}" class="form-control" rows="3" placeholder="任务的具体要求..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">难度等级 (1-5)</label>
+                                <select th:field="*{difficulty}" class="form-select">
+                                    <option value="1">⭐ E级 (简单)</option>
+                                    <option value="2">⭐⭐ D级 (普通)</option>
+                                    <option value="3">⭐⭐⭐ C级 (困难)</option>
+                                    <option value="4">⭐⭐⭐⭐ B级 (极难)</option>
+                                    <option value="5">⭐⭐⭐⭐⭐ A级 (地狱)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">提升属性 (Type)</label>
+                                <select th:field="*{attributeType}" class="form-select">
+                                    <option value="STR">🔥 力量 (STR) - 运动/体力</option>
+                                    <option value="INT">🧠 智力 (INT) - 学习/思考</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">截止日期 (Deadline)</label>
+                            <input type="date" th:field="*{deadline}" class="form-control">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" 
+                                    th:text="${quest.id == null ? '✨ 发布任务' : '💾 保存修改'}"></button>
+                            <a href="/quests" class="btn btn-secondary">取消</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

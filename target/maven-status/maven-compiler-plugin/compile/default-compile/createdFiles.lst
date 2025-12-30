@@ -1,0 +1,17 @@
+com\liferpg\controllers\ShopController.class
+com\liferpg\utils\GameMath.class
+com\liferpg\models\Quest.class
+com\liferpg\Application.class
+com\liferpg\models\Reward.class
+com\liferpg\models\PlayerRepository.class
+com\liferpg\controllers\PlayerController$TitleInfo.class
+com\liferpg\models\PurchaseLogRepository.class
+com\liferpg\models\User.class
+com\liferpg\models\Player.class
+com\liferpg\models\RewardRepository.class
+com\liferpg\models\UserRepository.class
+com\liferpg\controllers\PlayerController.class
+com\liferpg\controllers\AuthController.class
+com\liferpg\models\PurchaseLog.class
+com\liferpg\controllers\QuestController.class
+com\liferpg\models\QuestRepository.class
